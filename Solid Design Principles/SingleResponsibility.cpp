@@ -27,6 +27,9 @@ struct Journal {
    }
 };
 
+// Now we can keep adding any number of classes or structures we wish to add without having to make changes in the main class
+// ....
+
 template<typename T> struct LibraryManager {
    static void add(const T &item) {
       std::cout << "Adding ..." << std::endl;
@@ -37,6 +40,8 @@ template<typename T> struct LibraryManager {
       std::cout << "Editing..." << std::endl;
       std::cout << item;
    }
+
+   // We can add or change any number of functionality with ease
 };
 
 int main() {
