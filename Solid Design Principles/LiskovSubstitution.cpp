@@ -44,9 +44,9 @@ void process(Rectangle &obj) {
 
 int main() {
    Rectangle r{3, 4};
-   process(r);
+   process(r); // Output should be: expected area = 30, got = 30
 
    Square s {5};
-   process(s);
+   process(s); // Output should be: expected area = 50, got = 50
    return 0;
 }
