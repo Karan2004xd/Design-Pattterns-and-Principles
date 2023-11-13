@@ -46,6 +46,7 @@ int main() {
    HtmlBuilder builder {"ul"};
    builder.add_child("li", "hello");
    builder.add_child("li", "world");
+   builder.add_child("li", "and everyone");
    std::cout << builder.str() << std::endl;
    return 0;
 }
