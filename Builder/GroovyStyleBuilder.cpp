@@ -21,7 +21,6 @@ protected:
          os << "/>" << std::endl;
       } else {
          os << ">" << std::endl;
-
          if (tag.text.length()) {
             os << tag.text << std::endl;
          }
@@ -29,7 +28,6 @@ protected:
          for (const auto &child : tag.childrens) {
             os << child;
          }
-
          os << "</" << tag.name << ">" << std::endl;
       }
       return os;
