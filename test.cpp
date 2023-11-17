@@ -1,20 +1,30 @@
-#include <string>
-using namespace std;
-
-struct Person
+struct Point
 {
-   int id {-1};
-   string name;
-   Person(std::string name) {
-      this->name = name;
-      this->id++;
-   }
+   int x{ 0 }, y{ 0 };
+
+   Point(){}
+
+   Point(const int x, const int y) : x{x}, y{y} {}
 };
 
-class PersonFactory
+struct Line
 {
-public:
-   Person create_person(const string& name) {
-      return {name};
+   Point *start, *end;
+
+   Line(Point* const start, Point* const end)
+      : start(start), end(end)
+   {
+   }
+
+   ~Line()
+   {
+      delete start;
+      delete end;
+   }
+
+   Line deep_copy() const
+   {
+      Line *line;
+      return { new Point {start->x, start->y}, new Point {end->x, line->end->y} };
    }
 };
