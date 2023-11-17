@@ -1,0 +1,20 @@
+New York City
+8398748
+Tokyo
+13515000
+London
+8908081
+Mumbai
+12478447
+Sydney
+5312163
+Los Angeles
+3979576
+Paris
+2148271
+Beijing
+21516000
+Rome
+2873494
+Toronto
+2731571
