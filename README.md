@@ -1,5 +1,5 @@
 # Design-Pattterns-and-Principles
-## Links for descriptive explaination of every design principles and patterns using the examples given in the repo
+## Links for descriptive explaination of every design principles and patterns using the examples given in the repository
 + [SOLID Design Principle](https://www.evernote.com/shard/s521/sh/cb75fd39-71d4-928f-b205-de0092f6a54c/faaiKd73fVrBSpdgg9CBEZc577IhmcQxzKl1NEsdeimFxBSjTyGh3vx1tA)
 + [Builder Design Pattern and its different types](https://docs.google.com/document/d/1FuFA1ANIR2zCkIEyZX8qZWp-9VGtU60SkRRD-LkR01E/edit?usp=sharing)
 + [Factories](https://docs.google.com/document/d/1f_VsIOq6PJN3aAKD6MWdmZ1SGx3t3ilYwa6CfAveL-o/edit?usp=sharing)
