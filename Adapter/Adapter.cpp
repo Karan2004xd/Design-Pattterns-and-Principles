@@ -15,7 +15,7 @@ public:
 class CelsiusToFahrenheitAdapter : public FahrenheitTempearature {
    CelsiusTemperature temp;
 public:
-   CelsiusToFahrenheitAdapter(const CelsiusTemperature &other) : temp(other) {}
+   explicit CelsiusToFahrenheitAdapter(const CelsiusTemperature &other) : temp(other) {}
    double get_fahrenhiet_temp() override {
       return (temp.get_celsius_temp() * 9 / 5) + 32;
    }

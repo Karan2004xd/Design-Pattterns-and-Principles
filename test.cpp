@@ -1,30 +1,33 @@
-struct Point
+struct Square
 {
-   int x{ 0 }, y{ 0 };
+   int side{ 0 };
 
-   Point(){}
-
-   Point(const int x, const int y) : x{x}, y{y} {}
+   explicit Square(const int side)
+      : side(side)
+   {
+   }
 };
 
-struct Line
+struct Rectangle
 {
-   Point *start, *end;
+   virtual int width() const = 0;
+   virtual int height() const = 0;
 
-   Line(Point* const start, Point* const end)
-      : start(start), end(end)
+   int area() const
    {
+      return width() * height();
+   }
+};
+
+struct SquareToRectangleAdapter : Rectangle
+{
+   Square square;
+   SquareToRectangleAdapter(const Square& square) : square(square) {}
+   int width() const override {
+      return square.side;
    }
 
-   ~Line()
-   {
-      delete start;
-      delete end;
-   }
-
-   Line deep_copy() const
-   {
-      Line *line;
-      return { new Point {start->x, start->y}, new Point {end->x, line->end->y} };
+   int height() const override {
+      return square.side;
    }
 };
