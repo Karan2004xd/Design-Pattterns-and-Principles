@@ -1,33 +1,48 @@
-struct Square
-{
-   int side{ 0 };
+#include <string>
+using namespace std;
 
-   explicit Square(const int side)
-      : side(side)
-   {
+struct Render {
+   virtual string str(string name) const = 0;
+};
+
+struct VectorSquare : Render 
+{
+   string str(string name) const override {
+      return "Drawing " + name + " as lines";
    }
 };
 
-struct Rectangle
+struct RasterSquare : Render 
 {
-   virtual int width() const = 0;
-   virtual int height() const = 0;
-
-   int area() const
-   {
-      return width() * height();
+   string str(string name) const override {
+      return "Drawing " + name + " as pixels";
    }
 };
 
-struct SquareToRectangleAdapter : Rectangle
+struct Shape
 {
-   Square square;
-   SquareToRectangleAdapter(const Square& square) : square(square) {}
-   int width() const override {
-      return square.side;
+   string name;
+   Render &render;
+   Shape(Render &render) : render(render) {}
+   string str() {
+      return render.str(name);
    }
+};
 
-   int height() const override {
-      return square.side;
+struct Triangle : Shape
+{
+   Triangle(Render &render)
+      : Shape(render)
+   {
+      name = "Triangle";
+   }
+};
+
+struct Square : Shape
+{
+   Square(Render &render)
+      : Shape(render)
+   {
+      name = "Square";
    }
 };
