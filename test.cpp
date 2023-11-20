@@ -1,48 +1,58 @@
+#include <iostream>
+#include <numeric>
 #include <string>
+#include <vector>
 using namespace std;
 
-struct Render {
-   virtual string str(string name) const = 0;
-};
+struct SumRenderer {
+protected:
+   vector<int> nums;
 
-struct VectorSquare : Render 
-{
-   string str(string name) const override {
-      return "Drawing " + name + " as lines";
+public:
+   void add(const int num) {
+      nums.push_back(num);
+   }
+
+   int sum() { 
+      return accumulate(nums.begin(), nums.end(), 0); 
    }
 };
 
-struct RasterSquare : Render 
+struct SingleValue : SumRenderer
 {
-   string str(string name) const override {
-      return "Drawing " + name + " as pixels";
-   }
+  SingleValue() = default;
+
+  explicit SingleValue(const int value)
+  {
+     add(value);
+  }
 };
 
-struct Shape
+struct ManyValues : SumRenderer 
 {
-   string name;
-   Render &render;
-   Shape(Render &render) : render(render) {}
-   string str() {
-      return render.str(name);
-   }
-};
+   ManyValues() = default;
 
-struct Triangle : Shape
-{
-   Triangle(Render &render)
-      : Shape(render)
+   explicit ManyValues(const int value)
    {
-      name = "Triangle";
+      add(value);
    }
 };
 
-struct Square : Shape
-{
-   Square(Render &render)
-      : Shape(render)
-   {
-      name = "Square";
+
+int sum(const vector<SumRenderer *> items) {
+   int result {0};
+   for (auto &i : items) {
+      result += i->sum();
    }
-};
+   return result;
+}
+
+int main() {
+   SingleValue single_value {1};
+   ManyValues other_values;
+   other_values.add(2);
+   other_values.add(3);
+   
+   cout << "Sum: " << sum({ &single_value, &other_values}) << endl;
+   return 0;
+}
