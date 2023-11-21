@@ -1,58 +1,65 @@
+#include <sstream>
 #include <iostream>
-#include <numeric>
 #include <string>
-#include <vector>
 using namespace std;
 
-struct SumRenderer {
-protected:
-   vector<int> nums;
-
-public:
-   void add(const int num) {
-      nums.push_back(num);
-   }
-
-   int sum() { 
-      return accumulate(nums.begin(), nums.end(), 0); 
-   }
-};
-
-struct SingleValue : SumRenderer
+struct Flower
 {
-  SingleValue() = default;
-
-  explicit SingleValue(const int value)
-  {
-     add(value);
-  }
+   virtual string str() = 0;
 };
 
-struct ManyValues : SumRenderer 
+struct Rose : Flower
 {
-   ManyValues() = default;
+   Rose() {}
 
-   explicit ManyValues(const int value)
-   {
-      add(value);
+   string str() override {
+      std::ostringstream oss;
+      oss << "A rose";
+      return oss.str();
    }
 };
 
-
-int sum(const vector<SumRenderer *> items) {
-   int result {0};
-   for (auto &i : items) {
-      result += i->sum();
+struct RedFlower : Flower
+{
+   Flower &flower;
+   RedFlower(Flower &flower) : flower(flower) {}
+   string str() override {
+      std::ostringstream oss;
+      oss << flower.str();
+      if (flower.str().find("blue") == std::string::npos) {
+         oss << " that is red";
+      } else if (flower.str().find("red") == std::string::npos) {
+         oss << " and red";
+      }
+      return oss.str();
    }
-   return result;
-}
+};
+
+struct BlueFlower : Flower
+{
+   Flower &flower;
+   BlueFlower(Flower &flower) : flower(flower) {}
+
+   string str() override {
+      std::ostringstream oss;
+      oss << flower.str();
+      if (flower.str().find("red") == std::string::npos) {
+         oss << " that is blue";
+      } else if (flower.str().find("blue") == std::string::npos) {
+         oss << " and blue";
+      }
+      return oss.str();
+   }
+};
 
 int main() {
-   SingleValue single_value {1};
-   ManyValues other_values;
-   other_values.add(2);
-   other_values.add(3);
-   
-   cout << "Sum: " << sum({ &single_value, &other_values}) << endl;
+   Rose rose;
+   RedFlower red_rose{rose};
+   RedFlower red_red_rose{red_rose};
+   BlueFlower blue_red_rose{red_rose};
+   cout << rose.str() << endl;          // "A rose"
+   cout << red_rose.str() << endl;      // "A rose that is red"
+   cout << red_red_rose.str() << endl;  // "A rose that is red"
+   cout << blue_red_rose.str() << endl; // "A rose that is red and blue"
    return 0;
 }
