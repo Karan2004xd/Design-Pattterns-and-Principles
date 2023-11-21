@@ -1,65 +1,40 @@
-#include <sstream>
 #include <iostream>
 #include <string>
-using namespace std;
 
-struct Flower
+struct Sentence
 {
-   virtual string str() = 0;
-};
+   struct WordToken
+   {
+      bool capitalize;
+   };
 
-struct Rose : Flower
-{
-   Rose() {}
+   Sentence(const std::string& text)
+      : text(text) {}
 
-   string str() override {
-      std::ostringstream oss;
-      oss << "A rose";
-      return oss.str();
-   }
-};
-
-struct RedFlower : Flower
-{
-   Flower &flower;
-   RedFlower(Flower &flower) : flower(flower) {}
-   string str() override {
-      std::ostringstream oss;
-      oss << flower.str();
-      if (flower.str().find("blue") == std::string::npos) {
-         oss << " that is red";
-      } else if (flower.str().find("red") == std::string::npos) {
-         oss << " and red";
+   WordToken& operator[](size_t index)
+   {
+      for (int i = 0; i < text.size(); i++) {
+         if (index > 0 && text[i] == ' ') {
+            index--;
+         } else {
+            if (index <= 0) {
+            }
+         }
       }
-      return oss.str();
    }
-};
 
-struct BlueFlower : Flower
-{
-   Flower &flower;
-   BlueFlower(Flower &flower) : flower(flower) {}
-
-   string str() override {
-      std::ostringstream oss;
-      oss << flower.str();
-      if (flower.str().find("red") == std::string::npos) {
-         oss << " that is blue";
-      } else if (flower.str().find("blue") == std::string::npos) {
-         oss << " and blue";
-      }
-      return oss.str();
+   std::string str() const
+   {
+      // todo
    }
+
+private:
+   std::string text;
+   int start, end;
 };
 
 int main() {
-   Rose rose;
-   RedFlower red_rose{rose};
-   RedFlower red_red_rose{red_rose};
-   BlueFlower blue_red_rose{red_rose};
-   cout << rose.str() << endl;          // "A rose"
-   cout << red_rose.str() << endl;      // "A rose that is red"
-   cout << red_red_rose.str() << endl;  // "A rose that is red"
-   cout << blue_red_rose.str() << endl; // "A rose that is red and blue"
+   std::string str {"hello world"};
+   std::cout << str.find("world") << std::endl;
    return 0;
 }
