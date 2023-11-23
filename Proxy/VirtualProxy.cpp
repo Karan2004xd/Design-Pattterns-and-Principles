@@ -24,6 +24,8 @@ struct BitmapProxy : Image {
       }
       bmp->draw();
    }
+
+   ~BitmapProxy() { delete bmp; }
 private:
    Bitmap *bmp {nullptr};
    std::string filename;

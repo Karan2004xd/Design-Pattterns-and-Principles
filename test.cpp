@@ -1,68 +1,56 @@
-#include <cctype>
-#include <cstddef>
-#include <cstdint>
 #include <iostream>
 #include <string>
-#include <vector>
 
-struct Sentence
+class Person
 {
-   struct WordToken
-   {
-      bool capitalize;
-      int start, end;
+   friend class ResponsiblePerson;
+   int age;
+   public:
+   Person(int age) : age(age) {}
 
-      bool covers(int position) const {
-         return position >= start && position <= end;
+   int get_age() const { return age; }
+   void set_age(int age) { this->age=age; }
+
+   std::string drink() const { return "drinking"; }
+   std::string drive() const { return "driving"; }
+   std::string drink_and_drive() const { return "driving while drunk"; }
+};
+
+class ResponsiblePerson
+{
+   public:
+      ResponsiblePerson(const Person &person) : person(person) {
       }
 
-      WordToken(int start, int end) : start(start), end(end) {}
-   };
+      int get_age() const { return person.get_age(); }
+      void set_age(int age) { 
+         person.set_age(age);
+      }
 
-   Sentence(const std::string& text) : text(text) {}
-
-   WordToken& operator[](size_t index)
-   {
-      int temp_start {-1}, temp_end;
-      for (int i = 0; i < text.size(); i++) {
-         if (index == 0 && text[i] != ' ') {
-            if (temp_start == -1) {
-               temp_start = i;
-               temp_end = i;
-            } 
-            temp_end++;
-         } 
-         if (text[i] == ' ') {
-            index--;
+      std::string drink() const {
+         if (get_age() <= 18) {
+            return "too young";
          }
+         return person.drink();
       }
-      words.emplace_back(WordToken {temp_start, temp_end});
-      return *words.rbegin();
-   }
-
-   std::string str() const
-   {
-      std::string result_str;
-      for (int i = 0; i < text.size(); i++) {
-         auto c = text[i];
-         for (auto &word : words) {
-            if (word.covers(i) && word.capitalize) {
-               c = toupper(c);
-            }
+      
+      std::string drive() const {
+         if (get_age() <= 16) {
+            return "too young";
          }
-         result_str += c;
+         return person.drive();
       }
-      return result_str;
-   }
 
-private:
-   std::vector<WordToken> words;
-   std::string text;
+      std::string drink_and_drive() const {
+         return "dead";
+      }
+   private:
+      Person person;
 };
 
 int main() {
-   Sentence sentence("alpha beta gamma");
-   sentence[1].capitalize = true;
-   std::cout << sentence.str() << std::endl;
+   Person p {19};
+   ResponsiblePerson rp(p);
+   std::cout << rp.drink_and_drive() << std::endl;
    return 0;
-};
+}
