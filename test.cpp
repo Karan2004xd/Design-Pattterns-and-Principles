@@ -1,56 +1,81 @@
+#include <vector>
 #include <iostream>
-#include <string>
 
-class Person
+struct Creature;
+struct Game
 {
-   friend class ResponsiblePerson;
-   int age;
-   public:
-   Person(int age) : age(age) {}
-
-   int get_age() const { return age; }
-   void set_age(int age) { this->age=age; }
-
-   std::string drink() const { return "drinking"; }
-   std::string drive() const { return "driving"; }
-   std::string drink_and_drive() const { return "driving while drunk"; }
+   std::vector<Creature*> creatures;
 };
 
-class ResponsiblePerson
+struct StatQuery
 {
-   public:
-      ResponsiblePerson(const Person &person) : person(person) {
-      }
+   enum Statistic { attack, defense } statistic;
+   int result;
 
-      int get_age() const { return person.get_age(); }
-      void set_age(int age) { 
-         person.set_age(age);
-      }
-
-      std::string drink() const {
-         if (get_age() <= 18) {
-            return "too young";
-         }
-         return person.drink();
-      }
-      
-      std::string drive() const {
-         if (get_age() <= 16) {
-            return "too young";
-         }
-         return person.drive();
-      }
-
-      std::string drink_and_drive() const {
-         return "dead";
-      }
-   private:
-      Person person;
+   StatQuery(Statistic statistic, int result) : statistic(statistic), result(result) {}
 };
 
-int main() {
-   Person p {19};
-   ResponsiblePerson rp(p);
-   std::cout << rp.drink_and_drive() << std::endl;
-   return 0;
-}
+struct Creature
+{
+   protected:
+      Game& game;
+      int base_attack, base_defense;
+
+   public:
+      Creature(Game &game, int base_attack, int base_defense) : game(game), base_attack(base_attack),
+      base_defense(base_defense) {}
+      virtual int get_attack() = 0;
+      virtual int get_defense() = 0;
+      virtual void query(void *source, StatQuery &sq) = 0; 
+};
+
+class Goblin : public Creature
+{
+   int get_statistics(StatQuery::Statistic stat) {
+      StatQuery sq {stat, 0};
+      for (auto &i : game.creatures) {
+         i->query(this, sq);
+      }
+      return sq.result;
+   }
+
+   public:
+      Goblin(Game &game, int base_attack, int base_defense) : Creature(game, base_attack, base_defense) {}
+
+      Goblin(Game &game) : Creature(game, 1, 1) {}
+
+      int get_attack() override {
+         return get_statistics(StatQuery::Statistic::attack);
+      }
+
+      int get_defense() override {
+         return get_statistics(StatQuery::Statistic::defense);
+      }
+
+      void query(void *source, StatQuery &sq) override {
+         if (this == source) {
+            if (sq.statistic == StatQuery::Statistic::attack) {
+               sq.result += base_attack;
+            } else if (sq.statistic == StatQuery::Statistic::defense) {
+               sq.result += base_defense;
+            }
+         } else {
+            if (sq.statistic == StatQuery::Statistic::defense) {
+               sq.result++;
+            }
+         }
+      }
+};
+
+class GoblinKing : public Goblin
+{
+   public:
+      GoblinKing(Game &game) : Goblin(game, 3, 3) {}
+      void query(void *source, StatQuery &sq) override {
+         if (sq.statistic == StatQuery::Statistic::attack && source != this) {
+            sq.result++;
+         } else {
+            Goblin::query(source, sq);
+         }
+      }
+};
