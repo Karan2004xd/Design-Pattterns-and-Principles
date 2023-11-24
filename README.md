@@ -1,5 +1,5 @@
 # Design-Pattterns-and-Principles
-## Links for descriptive explaination of every design principles and patterns using the examples given in the repository
+# # Links for descriptive explaination of every design principles and patterns using the examples given in the repository
 + [SOLID Design Principle](https://docs.google.com/document/d/1FuFA1ANIR2zCkIEyZX8qZWp-9VGtU60SkRRD-LkR01E/edit?usp=sharing)
 + [Builder Design Pattern and its different types](https://docs.google.com/document/d/1FuFA1ANIR2zCkIEyZX8qZWp-9VGtU60SkRRD-LkR01E/edit?usp=sharing)
 + [Factories](https://docs.google.com/document/d/1f_VsIOq6PJN3aAKD6MWdmZ1SGx3t3ilYwa6CfAveL-o/edit?usp=sharing)
@@ -13,6 +13,7 @@
 + [FlyWeight](https://docs.google.com/document/d/1WM-k1fctGJDHRlNfFfYBbVP0X5I6dHvo0qUnObZgfR4/edit?usp=sharing)
 + [Proxy](https://docs.google.com/document/d/1_EOLpzXMk15ZgmP1moctSO7qZfDLV8pTMVOdCrX14HY/edit?usp=sharing)
 + [Chain of Responsibilities](https://docs.google.com/document/d/1A_WibU-wfvYX-uew5YXNkhyMX3H7BR4_T2-LuewLito/edit?usp=sharing)
++ [Command](https://docs.google.com/document/d/1Eauc-P4O5XpG5d-N7Zf9ooQ5bofFQQT6fj8qOJd8yjE/edit?usp=sharing)
   
 ### Note: The source code is written in c++ only, but still the explaination of all the patterns and principle in not language specific.
 Also would appreciate if someone is willing to contribute to this repository, by maybe providing the source code for the given examples in some different languages. Lastly, in case you spot some bug or some mistake made by me than feel free to raise a issue, it would be very helpful for me to spot bugs or mistakes in case if there are any.
