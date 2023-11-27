@@ -23,4 +23,5 @@ template <typename T> struct Observable {
       observers.erase(std::find(observers.begin(), observers.end(), observer));
    }
 };
+
 #endif // OBSERVABLE_H_
