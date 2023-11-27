@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 
 struct ChatRoom;
 
@@ -15,7 +16,7 @@ struct Person {
 
    void say(const std::string &message) const;
    void pm(const std::string &who, const std::string &message) const;
-   void receive(const std::string &origin, const std::string &message) const;
+   void receive(const std::string &origin, const std::string &message);
 
    bool operator==(const Person &rhs) const;
    bool operator!=(const Person &rhs) const;
