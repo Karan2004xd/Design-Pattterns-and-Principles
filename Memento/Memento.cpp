@@ -1,10 +1,10 @@
 #include <iostream>
 #include <ostream>
 
-class Momento {
+class Memento {
    double balance;
 public:
-   Momento(double balance) : balance(balance) {}
+   Memento(double balance) : balance(balance) {}
    friend class BankAccount;
 };
 
@@ -12,13 +12,13 @@ class BankAccount {
    double balance;
 public:
    BankAccount(double balance) : balance(balance) {}
-   Momento deposit(double amount) {
+   Memento deposit(double amount) {
       balance += amount;
       return {balance};
    }
 
-   void restore(Momento &momento) {
-      balance = momento.balance;
+   void restore(Memento &memento) {
+      balance = memento.balance;
    }
 
    friend std::ostream &operator<<(std::ostream &os, const BankAccount &obj) {

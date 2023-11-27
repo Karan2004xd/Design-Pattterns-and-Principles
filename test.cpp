@@ -1,42 +1,50 @@
-#include <vector>
 #include <iostream>
+#include <vector>
+#include <memory>
+using namespace std;
 
-struct Participant;
+struct Token
+{
+   int value;
 
-struct Mediator {
-   std::vector<Participant*> participants;
+   Token(int value) : value(value) {}
 };
 
-struct Participant 
+struct Memento
 {
-   int value{0};
-   Mediator& mediator;
+   vector<shared_ptr<Token>> tokens;
+};
 
-   Participant(Mediator &mediator) : mediator(mediator)
+struct TokenMachine
+{
+   vector<shared_ptr<Token>> tokens;
+
+   Memento add_token(int value)
    {
-      mediator.participants.push_back(this);
+      return add_token(make_shared<Token>(value));
    }
 
-   void say(int value)
+   // adds the token to the set of tokens and returns the
+   // snapshot of the entire system
+   Memento add_token(const shared_ptr<Token>& token)
    {
-      for (auto &i : mediator.participants) {
-         if (i != this) {
-            i->value += value;
+      if (token) {
+         tokens.push_back(token);
+         Memento m;
+         for (auto &t : tokens) {
+            m.tokens.emplace_back(make_shared<Token>(t->value));
          }
+         return m;
+      }
+      return {};
+   }
+
+   // reverts the system to a state represented by the token
+   void revert(const Memento& m)
+   {
+      tokens.clear();
+      for (auto &t : m.tokens) {
+         tokens.emplace_back(make_shared<Token>(t->value));
       }
    }
 };
-
-int main() {
-   Mediator m;
-   Participant john {m};
-   Participant jane {m};
-
-   john.say(3);
-   std::cout << "John value: " << john.value << ", Jane value: " << jane.value << std::endl;
-
-   jane.say(2);
-   std::cout << "John value: " << john.value << ", Jane value: " << jane.value << std::endl;
-   return 0;
-}
-
