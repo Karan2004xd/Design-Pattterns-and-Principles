@@ -3,22 +3,26 @@
 class LightSwitch;
 
 struct State {
-   virtual void on(LightSwitch *ls);
-   virtual void off(LightSwitch *ls);
+   virtual void on(LightSwitch *ls) {
+      std::cout << "Light is already turned on" << std::endl;
+   }
+   virtual void off(LightSwitch *ls) {
+      std::cout << "Light is already turned off" << std::endl;
+   }
 };
 
 struct OffState : State {
    OffState() {
       std::cout << "Light is turned off" << std::endl;
    }
-   void off(LightSwitch *ls) override;
+   void on(LightSwitch *ls) override;
 };
 
 struct OnState : State {
    OnState() {
       std::cout << "Light is turned on" << std::endl;
    }
-   void on(LightSwitch *ls) override;
+   void off(LightSwitch *ls) override;
 };
 
 class LightSwitch {
@@ -41,13 +45,13 @@ public:
    }
 };
 
-void OffState::off(LightSwitch *ls) {
+void OnState::off(LightSwitch *ls) {
    std::cout << "Switching light off..." << std::endl;
    ls->set_state(new OffState());
    delete this;
 }
 
-void OnState::on(LightSwitch *ls) {
+void OffState::on(LightSwitch *ls) {
    std::cout << "Switching light on..." << std::endl;
    ls->set_state(new OnState());
    delete this;
