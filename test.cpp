@@ -1,69 +1,42 @@
 #include <iostream>
-#include <sstream>
 #include <vector>
-#include <string>
+#include <complex>
+#include <tuple>
+#include <cmath>
+
 using namespace std;
 
-enum class State {
-   LOCKED,
-   OPEN,
-   ERROR
-};
-
-inline string get_state(State state) {
-   string status;
-   switch (state) {
-      case State::LOCKED:
-         status = "LOCKED";
-         break;
-      case State::OPEN:
-         status = "OPEN";
-         break;
-      case State::ERROR:
-         status = "ERROR";
-         break;
-   }
-   return status;
-}
-
-class CombinationLock
+struct DiscriminantStrategy
 {
-   vector<int> combination;
-   int nums;
-   public:
-   string status;
-   ostringstream oss;
+   virtual double calculate_discriminant(double a, double b, double c) = 0;
+};
 
-   CombinationLock(const vector<int> &combination) : combination(combination) {
-      status = get_state(State::LOCKED);
-      nums = 0;
-   }
-
-   void enter_digit(int digit)
-   {
-      if (digit == combination[nums] && nums < combination.size() - 1) {
-         oss << digit;
-         status = oss.str();
-      } else if (digit != combination[nums]) {
-         status = get_state(State::ERROR);
-      } else {
-         status = get_state(State::OPEN);
-      }
-      nums++;
+struct OrdinaryDiscriminantStrategy : DiscriminantStrategy
+{
+   double calculate_discriminant(double a, double b, double c) override {
+      double d = pow(b, 2) - (4 * a * c);
+      return d;
    }
 };
 
-int main() {
-   CombinationLock cl ({1, 2, 3});
-   cout << cl.status << endl;
+struct RealDiscriminantStrategy : DiscriminantStrategy
+{
+   double calculate_discriminant(double a, double b, double c) override {
+      double d = pow(b, 2) - (4 * a * c);
+      return d >= 0 ? d : NAN;
+   }
+};
 
-   cl.enter_digit(1);
-   cout << cl.status << endl;
+class QuadraticEquationSolver
+{
+   DiscriminantStrategy& strategy;
+   public:
+   QuadraticEquationSolver(DiscriminantStrategy &strategy) : strategy(strategy) {}
 
-   cl.enter_digit(1);
-   cout << cl.status << endl;
-
-   cl.enter_digit(3);
-   cout << cl.status << endl;
-   return 0;
-}
+   tuple<complex<double>, complex<double>> solve(double a, double b, double c)
+   {
+      complex<double> disc {strategy.calculate_discriminant(a, b, c), 0};
+      auto root_disc = sqrt(disc);
+      return {(-b + root_disc) / (2 * a), (-b - root_disc) / (2 * a)};
+   }
+};
