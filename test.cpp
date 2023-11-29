@@ -1,50 +1,69 @@
 #include <iostream>
+#include <sstream>
 #include <vector>
-#include <memory>
+#include <string>
 using namespace std;
 
-struct Token
-{
-   int value;
-
-   Token(int value) : value(value) {}
+enum class State {
+   LOCKED,
+   OPEN,
+   ERROR
 };
 
-struct Memento
-{
-   vector<shared_ptr<Token>> tokens;
-};
+inline string get_state(State state) {
+   string status;
+   switch (state) {
+      case State::LOCKED:
+         status = "LOCKED";
+         break;
+      case State::OPEN:
+         status = "OPEN";
+         break;
+      case State::ERROR:
+         status = "ERROR";
+         break;
+   }
+   return status;
+}
 
-struct TokenMachine
+class CombinationLock
 {
-   vector<shared_ptr<Token>> tokens;
+   vector<int> combination;
+   int nums;
+   public:
+   string status;
+   ostringstream oss;
 
-   Memento add_token(int value)
-   {
-      return add_token(make_shared<Token>(value));
+   CombinationLock(const vector<int> &combination) : combination(combination) {
+      status = get_state(State::LOCKED);
+      nums = 0;
    }
 
-   // adds the token to the set of tokens and returns the
-   // snapshot of the entire system
-   Memento add_token(const shared_ptr<Token>& token)
+   void enter_digit(int digit)
    {
-      if (token) {
-         tokens.push_back(token);
-         Memento m;
-         for (auto &t : tokens) {
-            m.tokens.emplace_back(make_shared<Token>(t->value));
-         }
-         return m;
+      if (digit == combination[nums] && nums < combination.size() - 1) {
+         oss << digit;
+         status = oss.str();
+      } else if (digit != combination[nums]) {
+         status = get_state(State::ERROR);
+      } else {
+         status = get_state(State::OPEN);
       }
-      return {};
-   }
-
-   // reverts the system to a state represented by the token
-   void revert(const Memento& m)
-   {
-      tokens.clear();
-      for (auto &t : m.tokens) {
-         tokens.emplace_back(make_shared<Token>(t->value));
-      }
+      nums++;
    }
 };
+
+int main() {
+   CombinationLock cl ({1, 2, 3});
+   cout << cl.status << endl;
+
+   cl.enter_digit(1);
+   cout << cl.status << endl;
+
+   cl.enter_digit(1);
+   cout << cl.status << endl;
+
+   cl.enter_digit(3);
+   cout << cl.status << endl;
+   return 0;
+}
