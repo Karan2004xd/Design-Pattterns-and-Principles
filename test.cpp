@@ -2,41 +2,60 @@
 #include <vector>
 #include <complex>
 #include <tuple>
-#include <cmath>
-
 using namespace std;
 
-struct DiscriminantStrategy
+struct Creature
 {
-   virtual double calculate_discriminant(double a, double b, double c) = 0;
+   int attack, health;
+
+   Creature(int attack, int health) : attack(attack), health(health) {}
 };
 
-struct OrdinaryDiscriminantStrategy : DiscriminantStrategy
+struct CardGame
 {
-   double calculate_discriminant(double a, double b, double c) override {
-      double d = pow(b, 2) - (4 * a * c);
-      return d;
-   }
-};
+   vector<Creature> creatures;
 
-struct RealDiscriminantStrategy : DiscriminantStrategy
-{
-   double calculate_discriminant(double a, double b, double c) override {
-      double d = pow(b, 2) - (4 * a * c);
-      return d >= 0 ? d : NAN;
-   }
-};
+   CardGame(const vector<Creature> &creatures) : creatures(creatures) {}
 
-class QuadraticEquationSolver
-{
-   DiscriminantStrategy& strategy;
-   public:
-   QuadraticEquationSolver(DiscriminantStrategy &strategy) : strategy(strategy) {}
-
-   tuple<complex<double>, complex<double>> solve(double a, double b, double c)
+   // return the index of the creature that won (is a live)
+   // example:
+   // - creature1 alive, creature2 dead, return creature1
+   // - creature1 dead, creature2 alive, return creature2
+   // - no clear winner: return -1
+   int combat(int creature1, int creature2)
    {
-      complex<double> disc {strategy.calculate_discriminant(a, b, c), 0};
-      auto root_disc = sqrt(disc);
-      return {(-b + root_disc) / (2 * a), (-b - root_disc) / (2 * a)};
+      Creature &first = creatures[creature1];
+      Creature &second = creatures[creature2];
+      hit(first, second);
+      hit(second, first);
+      bool first_alive = first.health > 0;
+      bool second_alive = second.health > 0;
+      if (first_alive == second_alive) return -1;
+      return first_alive ? creature1 : creature2;
+   }
+
+   virtual void hit(Creature& attacker, Creature& other) = 0;
+};
+
+struct TemporaryCardDamageGame : CardGame
+{
+   TemporaryCardDamageGame(const vector<Creature> &creatures) : CardGame(creatures) {}
+
+   void hit(Creature &attacker, Creature &other) override {
+      auto old_health = other.health;
+      other.health -= attacker.attack;
+      if (other.health > 0) {
+         other.health = old_health;
+      }
+   }
+};
+
+struct PermanentCardDamageGame : CardGame
+{
+   PermanentCardDamageGame(const vector<Creature> &creatures) : CardGame(creatures) {}
+
+   void hit(Creature &attacker, Creature &other) override
+   {
+      other.health -= attacker.attack;
    }
 };
