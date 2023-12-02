@@ -1,61 +1,75 @@
-#include <iostream>
-#include <vector>
-#include <complex>
-#include <tuple>
+#include <string>
+#include <sstream>
 using namespace std;
 
-struct Creature
-{
-   int attack, health;
+struct AdditionExpression;
+struct MultiplicationExpression;
+struct Value;
 
-   Creature(int attack, int health) : attack(attack), health(health) {}
+struct ExpressionVisitor
+{
+   virtual void accept(AdditionExpression &ae) = 0;
+   virtual void accept(MultiplicationExpression &me) = 0;
+   virtual void accept(Value &value) = 0;
 };
 
-struct CardGame
+struct Expression
 {
-   vector<Creature> creatures;
-
-   CardGame(const vector<Creature> &creatures) : creatures(creatures) {}
-
-   // return the index of the creature that won (is a live)
-   // example:
-   // - creature1 alive, creature2 dead, return creature1
-   // - creature1 dead, creature2 alive, return creature2
-   // - no clear winner: return -1
-   int combat(int creature1, int creature2)
-   {
-      Creature &first = creatures[creature1];
-      Creature &second = creatures[creature2];
-      hit(first, second);
-      hit(second, first);
-      bool first_alive = first.health > 0;
-      bool second_alive = second.health > 0;
-      if (first_alive == second_alive) return -1;
-      return first_alive ? creature1 : creature2;
-   }
-
-   virtual void hit(Creature& attacker, Creature& other) = 0;
+   virtual void visit(ExpressionVisitor& ev) = 0;
 };
 
-struct TemporaryCardDamageGame : CardGame
+struct Value : Expression
 {
-   TemporaryCardDamageGame(const vector<Creature> &creatures) : CardGame(creatures) {}
+   int value;
 
-   void hit(Creature &attacker, Creature &other) override {
-      auto old_health = other.health;
-      other.health -= attacker.attack;
-      if (other.health > 0) {
-         other.health = old_health;
-      }
+   Value(int value) : value(value) {}
+   void visit(ExpressionVisitor &ev) override {
+      ev.accept(*this);
    }
 };
 
-struct PermanentCardDamageGame : CardGame
+struct AdditionExpression : Expression
 {
-   PermanentCardDamageGame(const vector<Creature> &creatures) : CardGame(creatures) {}
+   Expression &lhs, &rhs;
 
-   void hit(Creature &attacker, Creature &other) override
-   {
-      other.health -= attacker.attack;
+   AdditionExpression(Expression &lhs, Expression &rhs) : lhs(lhs), rhs(rhs) {}
+   void visit(ExpressionVisitor &ev) override {
+      ev.accept(*this);
    }
+};
+
+struct MultiplicationExpression : Expression
+{
+   Expression &lhs, &rhs;
+
+   MultiplicationExpression(Expression &lhs, Expression &rhs)
+      : lhs(lhs), rhs(rhs) {}
+
+   void visit(ExpressionVisitor &ev) override {
+      ev.accept(*this);
+   }
+};
+
+struct ExpressionPrinter : ExpressionVisitor
+{
+   ostringstream oss;
+   void accept(AdditionExpression &ae) override {
+      oss << "(";
+      ae.lhs.visit(*this);
+      oss << "+";
+      ae.rhs.visit(*this);
+      oss << ")";
+   }
+
+   void accept(MultiplicationExpression &me) override {
+      me.lhs.visit(*this);
+      oss << "*";
+      me.rhs.visit(*this);
+   }
+
+   void accept(Value &value) override {
+      oss << value.value;
+   }
+
+   string str() const { return oss.str(); }
 };
