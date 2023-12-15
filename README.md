@@ -1,7 +1,7 @@
 # Design-Pattterns-and-Principles (From the GoF book on Design Patterns and Principles)
 ### # Links for descriptive explaination of every design principles and patterns using the examples given in the repository
 + [SOLID Design Principle](https://docs.google.com/document/d/1FuFA1ANIR2zCkIEyZX8qZWp-9VGtU60SkRRD-LkR01E/edit?usp=sharing)
-+ [Builder Design Pattern and its different types](https://docs.google.com/document/d/1FuFA1ANIR2zCkIEyZX8qZWp-9VGtU60SkRRD-LkR01E/edit?usp=sharing)
++ [Builder Design Pattern and its different types](https://docs.google.com/document/d/1mW6bjH_c3mt1bRmjpbr-LZ5lf3mIFthlb8H-v6esJl0/edit?usp=sharing)
 + [Factories](https://docs.google.com/document/d/1f_VsIOq6PJN3aAKD6MWdmZ1SGx3t3ilYwa6CfAveL-o/edit?usp=sharing)
 + [Prototypes](https://docs.google.com/document/d/1ZleDGCLW68ay2ST-0vxnFdx5QBqKjonpIYKOZrkUpYg/edit?usp=sharing)
 + [Singleton](https://docs.google.com/document/d/1zKOsWRMIIYJ38OyyoKO-fDSVxAfbQ8oKvzgoLc3fRAE/edit?usp=sharing)
